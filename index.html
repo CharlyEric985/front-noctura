@@ -1,7 +1,1130 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>NOCTURA — Supervision portuaire</title><style>
-:root{color-scheme:dark;--bg:#06111e;--panel:#091a2be8;--line:#ffffff25;--muted:#9cb1c6;--cyan:#4ab9ff;--green:#49e2ac}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#f4f8ff;font:14px system-ui,Segoe UI,sans-serif}button,input,select{font:inherit}button{cursor:pointer;color:inherit}.top{position:relative;z-index:4;display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap;padding:15px 22px;background:#071522f5;border-bottom:1px solid var(--line)}.brand{display:flex;align-items:center;gap:12px}.logo{display:grid;place-items:center;background:linear-gradient(140deg,#57d8ff,#2784ed);color:#001321;font-size:27px;font-weight:900;width:47px;height:47px;border-radius:13px}.brand b{font-size:22px;letter-spacing:.25em}.brand small{display:block;color:var(--muted);letter-spacing:.04em}.top-controls{display:flex;align-items:center;flex-wrap:wrap;gap:10px}.tabs{display:flex;padding:4px;border:1px solid var(--line);border-radius:12px;background:#112538}.tabs button{background:none;border:0;border-radius:9px;padding:10px 16px}.tabs button.active{background:#27628c;color:white}.pill{background:#12263b;border:1px solid var(--line);border-radius:11px;padding:9px 12px}.pill small{display:block;color:var(--muted);font-size:10px}.pill input{background:transparent;color:white;border:0;width:104px}.pill select{background:#112538;color:white;border:0}.stage{position:relative;min-height:72vh;overflow:hidden;background:#051322}.photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;transition:opacity .35s}.shade{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,#05132155,transparent 24%,transparent 58%,#051321e8)}.stage-title{position:absolute;top:22px;left:25px;background:#061625c9;border:1px solid var(--line);border-radius:13px;padding:12px 16px;backdrop-filter:blur(12px)}.stage-title h1{font-size:19px;margin:0 0 3px}.stage-title p{margin:0;color:var(--muted);font-size:12px}.marker{position:absolute;transform:translate(-50%,-50%);background:#071b2de9;border:2px solid var(--green);border-radius:100px;min-width:53px;height:53px;font-weight:800;font-size:21px;box-shadow:0 0 0 10px #49e2ac20,0 0 30px #0009}.marker[data-zone=B]{border-color:var(--cyan);box-shadow:0 0 0 10px #4ab9ff22,0 0 30px #0009}.marker.selected{background:#226a74;box-shadow:0 0 0 14px #49e2ac30}.marker[data-zone=B].selected{background:#205784;box-shadow:0 0 0 14px #4ab9ff30}.marker-a{left:70%;top:37%}.marker-b{left:57%;top:53%}.bottom{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr 1.15fr;gap:14px;padding:14px 20px 22px;margin-top:-130px}.card{background:var(--panel);border:1px solid #ffffff2c;border-radius:16px;padding:19px;backdrop-filter:blur(18px);box-shadow:0 14px 35px #0006}.card h2{font-size:16px;margin:0 0 18px}.row{display:flex;align-items:center;justify-content:space-between;gap:12px}.muted{color:var(--muted);font-size:12px}.value{font-size:28px;font-weight:800;margin:9px 0}.range{width:100%;accent-color:var(--cyan)}.card button.action{padding:9px 13px;border:1px solid #ffffff32;background:#18344a;border-radius:9px}.tag{font-size:11px;color:#7aefbf}.tag.manual{color:#ffc77c}.metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.metric{background:#0c2034;border:1px solid var(--line);padding:12px;border-radius:11px}.metric strong{display:block;font-size:20px;margin-top:6px}.footer{padding:0 22px 20px;color:#8da4b9;font-size:11px}.status{font-size:11px;color:#91efc7}.hidden{display:none!important}@media(max-width:1000px){.bottom{grid-template-columns:1fr 1fr;margin-top:-65px}.metrics{grid-column:1/-1}}@media(max-width:650px){.top{padding:12px}.brand b{font-size:17px}.top-controls{width:100%}.tabs{width:100%;justify-content:space-between}.tabs button{flex:1;padding:10px 6px}.stage{min-height:62vh}.stage-title{left:12px;top:12px}.bottom{grid-template-columns:1fr;margin-top:0;padding:12px}.metrics{grid-column:auto}.marker-a{left:70%;top:37%}.marker-b{left:57%;top:53%}}
-</style></head><body><header class="top"><div class="brand"><div class="logo">N</div><div><b>NOCTURA</b><small>Supervision intelligente de l’éclairage portuaire</small></div></div><div class="top-controls"><nav class="tabs" aria-label="Vue temporelle"><button data-phase="jour">☀ Jour</button><button data-phase="crepuscule">◐ Crépuscule</button><button data-phase="nuit">☾ Nuit</button></nav><label class="pill"><small>Heure simulée</small><input id="clock" type="time" value="20:30"></label><label class="pill"><small>Affichage</small><select id="timing"><option value="manual">Vue manuelle</option><option value="simulation">Selon heure simulée</option><option value="realtime">Heure locale réelle</option></select></label><label class="pill"><small>Météo (simulation)</small><select id="weather"><option value="clear">☀ Dégagé</option><option value="cloudy">☁ Nuageux</option><option value="rain">☂ Pluie</option><option value="fog">≋ Brouillard</option></select></label><span class="pill" id="liveClock">--:--</span></div></header>
-<main><section class="stage" aria-label="Photographie du port de Porquerolles"><img id="photo" class="photo" src="assets/porquerolles-jour.png" alt="Vue aérienne du port de Porquerolles"><div class="shade"></div><div class="stage-title"><h1>Port de Porquerolles · <span id="phaseTitle">Jour</span></h1><p id="description">Vue photographique · supervision de démonstration</p></div><button class="marker marker-a selected" data-zone="A" title="Zone A — triangle après les pontons">A</button><button class="marker marker-b" data-zone="B" title="Zone B — pontons">B</button></section><section class="bottom"><article class="card"><div class="row"><h2>Zone A · Triangle après les pontons</h2><span id="statusA" class="tag">● AUTO</span></div><div class="muted">Intensité lumineuse</div><div class="value"><span id="valueA">65</span> %</div><input class="range" id="rangeA" type="range" min="0" max="100" step="5" value="65" aria-label="Intensité zone A"><div class="row"><span class="muted" id="powerA">Puissance estimée : 1,30 kW</span><button class="action" id="autoA">Mode AUTO</button></div></article><article class="card"><div class="row"><h2>Zone B · Pontons</h2><span id="statusB" class="tag">● AUTO</span></div><div class="muted">Intensité lumineuse</div><div class="value"><span id="valueB">80</span> %</div><input class="range" id="rangeB" type="range" min="0" max="100" step="5" value="80" aria-label="Intensité zone B"><div class="row"><span class="muted" id="powerB">Puissance estimée : 2,40 kW</span><button class="action" id="autoB">Mode AUTO</button></div></article><article class="card metrics"><div class="row"><h2>Indicateurs globaux</h2><span class="status">● Démonstration locale</span></div><div class="metric-grid"><div class="metric"><span class="muted">Puissance simulée</span><strong id="totalPower">3,70 kW</strong></div><div class="metric"><span class="muted">Intensité moyenne</span><strong id="average">73 %</strong></div><div class="metric"><span class="muted">Zones automatiques</span><strong id="autoCount">2 / 2</strong></div><div class="metric"><span class="muted">Conditions simulées</span><strong id="weatherLabel">Dégagé</strong></div></div><p class="muted" id="logicText">La météo et l’heure influencent les consignes automatiques.</p><button class="action" id="apply" style="margin-top:8px">↻ Appliquer la régulation</button></article></section></main><footer class="footer">NOCTURA · Ocean Hackathon Toulon 2026 · Images fournies, non retouchées · Valeurs et règles de régulation illustratives, sans connexion à des luminaires réels.</footer>
-<script>
-(()=>{'use strict';const $=id=>document.getElementById(id);const zones={A:{level:65,auto:true,maxKW:2},B:{level:80,auto:true,maxKW:3}};const pictures={jour:'assets/porquerolles-jour.png',crepuscule:'assets/porquerolles-crepuscule.png',nuit:'assets/porquerolles-nuit.png'};const names={jour:'Jour',crepuscule:'Crépuscule',nuit:'Nuit'};const weatherNames={clear:'Dégagé',cloudy:'Nuageux',rain:'Pluie',fog:'Brouillard'};let phase='jour',selected='A';const clamp=x=>Math.max(0,Math.min(100,Math.round(x/5)*5));const mins=s=>{const [h,m]=s.split(':').map(Number);return h*60+m};function time(){const d=new Date();return d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit',second:'2-digit'})}function timePhase(t){return t>=7*60&&t<18*60+30?'jour':t>=18*60+30&&t<21*60?'crepuscule':'nuit'}function currentMinutes(){const d=new Date();return d.getHours()*60+d.getMinutes()}function displayPhase(p){if(!pictures[p])return;phase=p;$('photo').src=pictures[p];$('phaseTitle').textContent=names[p];$('description').textContent=`Vue ${names[p].toLowerCase()} · image originale non retouchée`;document.querySelectorAll('[data-phase]').forEach(b=>{b.classList.toggle('active',b.dataset.phase===p);b.setAttribute('aria-pressed',String(b.dataset.phase===p))})}function updatePhase(){const mode=$('timing').value;if(mode==='manual')return;const t=mode==='realtime'?currentMinutes():mins($('clock').value);displayPhase(timePhase(t))}function render(){for(const id of ['A','B']){const z=zones[id];$('value'+id).textContent=z.level;$('range'+id).value=z.level;$('status'+id).textContent=z.auto?'● AUTO':'● MANUEL';$('status'+id).classList.toggle('manual',!z.auto);$('auto'+id).textContent=z.auto?'Passer en manuel':'Activer AUTO';$('power'+id).textContent=`Puissance estimée : ${(z.maxKW*z.level/100).toFixed(2).replace('.',',')} kW`;}const total=Object.values(zones).reduce((s,z)=>s+z.maxKW*z.level/100,0);$('totalPower').textContent=total.toFixed(2).replace('.',',')+' kW';$('average').textContent=Math.round((zones.A.level+zones.B.level)/2)+' %';$('autoCount').textContent=Object.values(zones).filter(z=>z.auto).length+' / 2';$('weatherLabel').textContent=weatherNames[$('weather').value];document.querySelectorAll('.marker').forEach(b=>b.classList.toggle('selected',b.dataset.zone===selected))}function regulate(){const t=$('timing').value==='realtime'?currentMinutes():mins($('clock').value);const p=$('timing').value==='manual'?phase:timePhase(t);const base={jour:0,crepuscule:50,nuit:70}[p];const weatherBoost={clear:0,cloudy:10,rain:20,fog:25}[$('weather').value];for(const id of ['A','B'])if(zones[id].auto)zones[id].level=clamp(base+weatherBoost+(id==='B'?10:0));$('logicText').textContent=`Régulation de démonstration : ${names[p].toLowerCase()}, météo ${weatherNames[$('weather').value].toLowerCase()}. Seules les zones en AUTO sont modifiées.`;render()}document.querySelectorAll('[data-phase]').forEach(b=>b.addEventListener('click',()=>{$('timing').value='manual';displayPhase(b.dataset.phase)}));document.querySelectorAll('.marker').forEach(b=>b.addEventListener('click',()=>{selected=b.dataset.zone;render();document.getElementById('range'+selected).focus({preventScroll:true})}));for(const id of ['A','B']){$('range'+id).addEventListener('input',e=>{zones[id].level=+e.target.value;zones[id].auto=false;selected=id;render()});$('auto'+id).addEventListener('click',()=>{zones[id].auto=!zones[id].auto;if(zones[id].auto)regulate();else render()})}$('timing').addEventListener('change',()=>{updatePhase();regulate()});$('clock').addEventListener('change',()=>{updatePhase();regulate()});$('weather').addEventListener('change',regulate);$('apply').addEventListener('click',regulate);setInterval(()=>{$('liveClock').textContent=time();if($('timing').value==='realtime'){const old=phase;updatePhase();if(phase!==old)regulate()}},1000);$('liveClock').textContent=time();displayPhase('jour');render()})();
-</script></body></html>
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>NOCTURA — Supervision portuaire</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #06111e;
+        --panel: #091a2be8;
+        --line: #ffffff25;
+        --muted: #9cb1c6;
+        --cyan: #4ab9ff;
+        --green: #49e2ac;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: #f4f8ff;
+        font:
+          14px system-ui,
+          Segoe UI,
+          sans-serif;
+      }
+      button,
+      input,
+      select {
+        font: inherit;
+      }
+      button {
+        cursor: pointer;
+        color: inherit;
+      }
+      .top {
+        position: relative;
+        z-index: 4;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        flex-wrap: wrap;
+        padding: 15px 22px;
+        background: #071522f5;
+        border-bottom: 1px solid var(--line);
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .logo {
+        display: grid;
+        place-items: center;
+        background: linear-gradient(140deg, #57d8ff, #2784ed);
+        color: #001321;
+        font-size: 27px;
+        font-weight: 900;
+        width: 47px;
+        height: 47px;
+        border-radius: 13px;
+      }
+      .brand b {
+        font-size: 22px;
+        letter-spacing: 0.25em;
+      }
+      .brand small {
+        display: block;
+        color: var(--muted);
+        letter-spacing: 0.04em;
+      }
+      .top-controls {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .tabs {
+        display: flex;
+        padding: 4px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #112538;
+      }
+      .tabs button {
+        background: none;
+        border: 0;
+        border-radius: 9px;
+        padding: 10px 16px;
+      }
+      .tabs button.active {
+        background: #27628c;
+        color: white;
+      }
+      .pill {
+        background: #12263b;
+        border: 1px solid var(--line);
+        border-radius: 11px;
+        padding: 9px 12px;
+      }
+      .pill small {
+        display: block;
+        color: var(--muted);
+        font-size: 10px;
+      }
+      .pill input {
+        background: transparent;
+        color: white;
+        border: 0;
+        width: 104px;
+      }
+      .pill select {
+        background: #112538;
+        color: white;
+        border: 0;
+      }
+      .stage {
+        position: relative;
+        min-height: 72vh;
+        overflow: hidden;
+        background: #051322;
+      }
+      .photo {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        transition: opacity 0.35s;
+      }
+      .shade {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: linear-gradient(
+          180deg,
+          #05132155,
+          transparent 24%,
+          transparent 58%,
+          #051321e8
+        );
+      }
+      .stage-title {
+        position: absolute;
+        top: 22px;
+        left: 25px;
+        background: #061625c9;
+        border: 1px solid var(--line);
+        border-radius: 13px;
+        padding: 12px 16px;
+        backdrop-filter: blur(12px);
+      }
+      .stage-title h1 {
+        font-size: 19px;
+        margin: 0 0 3px;
+      }
+      .stage-title p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .marker {
+        position: absolute;
+        transform: translate(-50%, -50%);
+        background: #071b2de9;
+        border: 2px solid var(--green);
+        border-radius: 100px;
+        min-width: 53px;
+        height: 53px;
+        font-weight: 800;
+        font-size: 21px;
+        box-shadow:
+          0 0 0 10px #49e2ac20,
+          0 0 30px #0009;
+      }
+      .marker[data-zone="B"] {
+        border-color: var(--cyan);
+        box-shadow:
+          0 0 0 10px #4ab9ff22,
+          0 0 30px #0009;
+      }
+      .marker.selected {
+        background: #226a74;
+        box-shadow: 0 0 0 14px #49e2ac30;
+      }
+      .marker[data-zone="B"].selected {
+        background: #205784;
+        box-shadow: 0 0 0 14px #4ab9ff30;
+      }
+      .marker-a {
+        left: 70%;
+        top: 37%;
+      }
+      .marker-b {
+        left: 57%;
+        top: 53%;
+      }
+      .bottom {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1.15fr;
+        gap: 14px;
+        padding: 14px 20px 22px;
+        margin-top: -130px;
+      }
+      .card {
+        background: var(--panel);
+        border: 1px solid #ffffff2c;
+        border-radius: 16px;
+        padding: 19px;
+        backdrop-filter: blur(18px);
+        box-shadow: 0 14px 35px #0006;
+      }
+      .card h2 {
+        font-size: 16px;
+        margin: 0 0 18px;
+      }
+      .row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .muted {
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .value {
+        font-size: 28px;
+        font-weight: 800;
+        margin: 9px 0;
+      }
+      .range {
+        width: 100%;
+        accent-color: var(--cyan);
+      }
+      .card button.action {
+        padding: 9px 13px;
+        border: 1px solid #ffffff32;
+        background: #18344a;
+        border-radius: 9px;
+      }
+      .tag {
+        font-size: 11px;
+        color: #7aefbf;
+      }
+      .tag.manual {
+        color: #ffc77c;
+      }
+      .metric-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 9px;
+      }
+      .metric {
+        background: #0c2034;
+        border: 1px solid var(--line);
+        padding: 12px;
+        border-radius: 11px;
+      }
+      .metric strong {
+        display: block;
+        font-size: 20px;
+        margin-top: 6px;
+      }
+      .footer {
+        padding: 0 22px 20px;
+        color: #8da4b9;
+        font-size: 11px;
+      }
+      .status {
+        font-size: 11px;
+        color: #91efc7;
+      }
+      .hidden {
+        display: none !important;
+      }
+      @media (max-width: 1000px) {
+        .bottom {
+          grid-template-columns: 1fr 1fr;
+          margin-top: -65px;
+        }
+        .metrics {
+          grid-column: 1/-1;
+        }
+      }
+      @media (max-width: 650px) {
+        .top {
+          padding: 12px;
+        }
+        .brand b {
+          font-size: 17px;
+        }
+        .top-controls {
+          width: 100%;
+        }
+        .tabs {
+          width: 100%;
+          justify-content: space-between;
+        }
+        .tabs button {
+          flex: 1;
+          padding: 10px 6px;
+        }
+        .stage {
+          min-height: 62vh;
+        }
+        .stage-title {
+          left: 12px;
+          top: 12px;
+        }
+        .bottom {
+          grid-template-columns: 1fr;
+          margin-top: 0;
+          padding: 12px;
+        }
+        .metrics {
+          grid-column: auto;
+        }
+        .marker-a {
+          left: 70%;
+          top: 37%;
+        }
+        .marker-b {
+          left: 57%;
+          top: 53%;
+        }
+      }
+
+      .live-dashboard { display:grid; grid-template-columns: repeat(6,minmax(125px,1fr)); gap:10px; padding:12px 22px; background:#071a2b; border-bottom:1px solid var(--line); }
+      .live-item { padding:12px; border:1px solid var(--line); border-radius:12px; background:#0e2539; min-width:0; }
+      .live-item span { display:block; font-size:11px; color:var(--muted); margin-bottom:6px; }
+      .live-item strong { font-size:20px; letter-spacing:.01em; font-variant-numeric:tabular-nums; overflow-wrap:anywhere; }
+      .live-item small { display:block; font-size:10px; color:#87b5d2; margin-top:5px; }
+      @media (max-width:1050px) { .live-dashboard {grid-template-columns:repeat(3,minmax(0,1fr));} }
+      @media (max-width:540px) { .live-dashboard {grid-template-columns:repeat(2,minmax(0,1fr));padding:10px 12px;} .live-item strong{font-size:17px;} }
+      .simulation-bar { display:flex; align-items:center; flex-wrap:wrap; gap:12px; padding:12px 22px; background:#0b2135; border-bottom:1px solid var(--line); }
+      .simulation-bar button { padding:10px 15px; border:1px solid #65c8ff77; background:#176b91; border-radius:9px; font-weight:700; }
+      .simulation-bar button:disabled { opacity:.45; cursor:not-allowed; }
+      .simulation-bar .secondary { background:#18344a; }
+      .simulation-progress { flex:1 1 230px; min-width:170px; height:9px; accent-color:var(--green); }
+      .simulation-status { color:#b9dbf2; font-size:12px; min-width:170px; }
+      .api-fields {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 10px 22px;
+        background: #0a1c2c;
+        border-bottom: 1px solid var(--line);
+      }
+      .api-fields label {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .api-fields input {
+        width: 77px;
+        padding: 7px;
+        border: 1px solid #ffffff33;
+        border-radius: 8px;
+        background: #10283d;
+        color: white;
+      }
+      .api-fields input[type="datetime-local"] {
+        width: 190px;
+      }
+      .api-fields button {
+        background: #176b91;
+        border: 1px solid #65c8ff77;
+        border-radius: 9px;
+        padding: 8px 12px;
+      }
+      .api-indicator {
+        font-size: 12px;
+        color: #ffc77c;
+      }
+      .api-indicator.ok {
+        color: #72e8b7;
+      }
+      .api-indicator.error {
+        color: #ff9999;
+      }
+      .prediction {
+        font-size: 13px;
+        color: #c3e7ff;
+        margin: 8px 0;
+      }
+      .range:disabled {
+        opacity: 0.55;
+      }
+      .footer code {
+        color: #b9dbf2;
+      }
+      @media (max-width: 650px) {
+        .api-fields {
+          padding: 10px 12px;
+        }
+        .api-fields label {
+          flex: 1 1 42%;
+          justify-content: space-between;
+        }
+        .api-fields input {
+          max-width: 105px;
+        }
+        .api-fields label:first-child {
+          flex-basis: 100%;
+        }
+        .api-fields input[type="datetime-local"] {
+          max-width: none;
+          width: 190px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="top">
+      <div class="brand">
+        <div class="logo">N</div>
+        <div>
+          <b>NOCTURA</b
+          ><small>Supervision intelligente de l’éclairage portuaire</small>
+        </div>
+      </div>
+      <div class="top-controls">
+        <nav class="tabs" aria-label="Vue temporelle">
+          <button data-phase="jour">☀ Jour</button
+          ><button data-phase="crepuscule">◐ Crépuscule</button
+          ><button data-phase="nuit">☾ Nuit</button>
+        </nav>
+        <label class="pill"
+          ><small>Heure simulée</small
+          ><input id="clock" type="time" value="20:30" /></label
+        ><label class="pill"
+          ><small>Affichage</small
+          ><select id="timing">
+            <option value="manual">Vue manuelle</option>
+            <option value="simulation">Selon heure simulée</option>
+            <option value="realtime">Heure locale réelle</option>
+          </select></label
+        ><label class="pill"
+          ><small>Météo (simulation)</small
+          ><select id="weather">
+            <option value="clear">☀ Dégagé</option>
+            <option value="cloudy">☁ Nuageux</option>
+            <option value="rain">☂ Pluie</option>
+            <option value="fog">≋ Brouillard</option>
+          </select></label
+        ><span class="pill" id="liveClock">--:--</span>
+      </div>
+    </header>
+    <section class="api-fields" aria-label="Paramètres API NOCTURA">
+      <label
+        >Date et heure
+        <input id="apiDate" type="datetime-local" step="60" /></label
+      ><label
+        >Température (°C)
+        <input
+          id="temperature"
+          type="number"
+          value="26"
+          min="-30"
+          max="55"
+          step="0.5" /></label
+      ><label
+        >Pluie (mm)
+        <input
+          id="rainMM"
+          type="number"
+          value="0"
+          min="0"
+          max="500"
+          step="0.5" /></label
+      ><label
+        >Visibilité (km)
+        <input
+          id="visibility"
+          type="number"
+          value="18"
+          min="0"
+          max="100"
+          step="0.5" /></label
+      ><label
+        >Soleil (°)
+        <input
+          id="sunAngle"
+          type="number"
+          value="-3"
+          min="-90"
+          max="90"
+          step="0.5" /></label
+      ><button id="sendAPI" type="button">↻ Interroger l’API</button
+      ><span
+        id="apiStatus"
+        class="api-indicator"
+        role="status"
+        aria-live="polite"
+        >API non interrogée</span
+      >
+    </section>
+    <section class="simulation-bar" aria-label="Simulation de journée">
+      <button id="simulateDay" type="button">▶ Simuler une journée (72 s)</button>
+      <button id="pauseDay" class="secondary" type="button" disabled>⏸ Pause</button>
+      <button id="stopDay" class="secondary" type="button" disabled>■ Arrêter</button>
+      <progress id="dayProgress" class="simulation-progress" max="72" value="0" aria-label="Progression de la journée"></progress>
+      <span id="dayStatus" class="simulation-status" role="status">Simulation prête · 1 h = 3 s</span>
+    </section>
+    <section class="live-dashboard" aria-label="Informations de simulation actualisées" aria-live="off">
+      <div class="live-item"><span>Heure de la journée simulée</span><strong id="simLiveTime">--:--</strong><small id="simLivePhase">En attente</small></div>
+      <div class="live-item"><span>Fréquentation · Zone A</span><strong id="simLiveA">—</strong><small>passages prévus / heure</small></div>
+      <div class="live-item"><span>Fréquentation · Zone B</span><strong id="simLiveB">—</strong><small>passages prévus / heure</small></div>
+      <div class="live-item"><span>Éclairage A / B</span><strong id="simLiveLevels">— / —</strong><small>% · consignes horaires de l’API</small></div>
+      <div class="live-item"><span>Météo simulée</span><strong id="simLiveWeather">—</strong><small id="simLiveWeatherDetail">Température / pluie / visibilité</small></div>
+      <div class="live-item"><span>Énergie cumulée NOCTURA</span><strong id="simLiveEnergy">—</strong><small id="simLiveEnergyDetail">kWh depuis 00:00 · estimation</small></div>
+    </section>
+    <main>
+      <section class="stage" aria-label="Photographie du port de Porquerolles">
+        <img
+          id="photo"
+          class="photo"
+          src="assets/porquerolles-jour.png"
+          alt="Vue aérienne du port de Porquerolles"
+        />
+        <div class="shade"></div>
+        <div class="stage-title">
+          <h1>Port de Porquerolles · <span id="phaseTitle">Jour</span></h1>
+          <p id="description">
+            Vue photographique · supervision de démonstration
+          </p>
+        </div>
+        <button
+          class="marker marker-a selected"
+          data-zone="A"
+          title="Zone A — triangle après les pontons"
+        >
+          A</button
+        ><button class="marker marker-b" data-zone="B" title="Zone B — pontons">
+          B
+        </button>
+      </section>
+      <section class="bottom">
+        <article class="card">
+          <div class="row">
+            <h2>Zone A · Triangle après les pontons</h2>
+            <span id="statusA" class="tag">● AUTO</span>
+          </div>
+          <div class="muted">Intensité lumineuse</div>
+          <div class="prediction" id="predictionA">
+            Fréquentation prévue : —
+          </div>
+          <div class="value"><span id="valueA">65</span> %</div>
+          <input
+            class="range"
+            id="rangeA"
+            type="range"
+            min="0"
+            max="100"
+            step="5"
+            value="65"
+            aria-label="Intensité zone A"
+          />
+          <div class="row">
+            <span class="muted" id="powerA">Puissance estimée : 1,30 kW</span
+            ><button class="action" id="autoA">Mode AUTO</button>
+          </div>
+        </article>
+        <article class="card">
+          <div class="row">
+            <h2>Zone B · Pontons</h2>
+            <span id="statusB" class="tag">● AUTO</span>
+          </div>
+          <div class="muted">Intensité lumineuse</div>
+          <div class="prediction" id="predictionB">
+            Fréquentation prévue : —
+          </div>
+          <div class="value"><span id="valueB">80</span> %</div>
+          <input
+            class="range"
+            id="rangeB"
+            type="range"
+            min="0"
+            max="100"
+            step="5"
+            value="80"
+            aria-label="Intensité zone B"
+          />
+          <div class="row">
+            <span class="muted" id="powerB">Puissance estimée : 2,40 kW</span
+            ><button class="action" id="autoB">Mode AUTO</button>
+          </div>
+        </article>
+        <article class="card metrics">
+          <div class="row">
+            <h2>Indicateurs globaux</h2>
+            <span class="status">● API Flask</span>
+          </div>
+          <div class="metric-grid">
+            <div class="metric">
+              <span class="muted">Puissance simulée</span
+              ><strong id="totalPower">3,70 kW</strong>
+            </div>
+            <div class="metric">
+              <span class="muted">Intensité moyenne</span
+              ><strong id="average">73 %</strong>
+            </div>
+            <div class="metric">
+              <span class="muted">Zones automatiques</span
+              ><strong id="autoCount">2 / 2</strong>
+            </div>
+            <div class="metric">
+              <span class="muted">Conditions simulées</span
+              ><strong id="weatherLabel">Dégagé</strong>
+            </div>
+          </div>
+          <p class="muted" id="logicText">
+            En attente de la première prédiction API.
+          </p>
+          <button class="action" id="apply" style="margin-top: 8px">
+            ↻ Appliquer la régulation
+          </button>
+        </article>
+      </section>
+    </main>
+    <footer class="footer">
+      NOCTURA · Ocean Hackathon Toulon 2026 · Images fournies, non retouchées ·
+      Simulation uniquement · Intensités calculées par API · Aucune commande de
+      luminaires réels.
+    </footer>
+    <script>
+      (() => {
+        "use strict";
+        const $ = (id) => document.getElementById(id);
+        const API_URL = "http://127.0.0.1:5000/api/predict";
+        const DAY_URL = "http://127.0.0.1:5000/api/simulate-day";
+        const SECONDS_PER_HOUR = 3;
+        const HOUR_MS = SECONDS_PER_HOUR * 1000;
+        const TOTAL_MS = 24 * HOUR_MS;
+        const TOTAL_SECONDS = TOTAL_MS / 1000;
+        let daySimulation = null;
+        let dayRequestPending = false;
+        const zones = {
+          A: { level: 0, auto: true, maxKW: 2, prediction: null, motif: "" },
+          B: { level: 0, auto: true, maxKW: 3, prediction: null, motif: "" },
+        };
+        const pictures = {
+          jour: "assets/porquerolles-jour.png",
+          crepuscule: "assets/porquerolles-crepuscule.png",
+          nuit: "assets/porquerolles-nuit.png",
+        };
+        const names = { jour: "Jour", crepuscule: "Crépuscule", nuit: "Nuit" };
+        const weatherNames = {
+          clear: "Dégagé",
+          cloudy: "Nuageux",
+          rain: "Pluie",
+          fog: "Brouillard",
+        };
+        let phase = "jour",
+          selected = "A",
+          requestSequence = 0,
+          lastResult = null,
+          debounce = null;
+        const clamp = (x) => Math.max(0, Math.min(100, Math.round(x)));
+        const pad = (n) => String(n).padStart(2, "0");
+        function localDateTime(d) {
+          return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+        }
+        function isoWithOffset(dateString) {
+          const d = new Date(dateString);
+          if (Number.isNaN(d.getTime()))
+            throw new Error("Date et heure invalides");
+          const offset = -d.getTimezoneOffset(),
+            sign = offset >= 0 ? "+" : "-";
+          return `${dateString}:00${sign}${pad(Math.floor(Math.abs(offset) / 60))}:${pad(Math.abs(offset) % 60)}`;
+        }
+        function time() {
+          return new Date().toLocaleTimeString("fr-FR", {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+          });
+        }
+        function timePhase(t) {
+          return t >= 7 * 60 && t < 18 * 60 + 30
+            ? "jour"
+            : t >= 18 * 60 + 30 && t < 21 * 60
+              ? "crepuscule"
+              : "nuit";
+        }
+        function displayPhase(p) {
+          if (!pictures[p]) return;
+          phase = p;
+          $("photo").src = pictures[p];
+          $("phaseTitle").textContent = names[p];
+          $("description").textContent =
+            `Vue ${names[p].toLowerCase()} · image originale non retouchée`;
+          document.querySelectorAll("[data-phase]").forEach((b) => {
+            b.classList.toggle("active", b.dataset.phase === p);
+            b.setAttribute("aria-pressed", String(b.dataset.phase === p));
+          });
+        }
+        function syncPhaseFromSun(sun) {
+          displayPhase(sun >= 0 ? "jour" : sun >= -6 ? "crepuscule" : "nuit");
+        }
+        function setStatus(message, type = "") {
+          $("apiStatus").textContent = message;
+          $("apiStatus").className = "api-indicator " + type;
+        }
+        function render() {
+          for (const id of ["A", "B"]) {
+            const z = zones[id];
+            $("value" + id).textContent =
+              z.prediction === null && z.auto ? "—" : z.level;
+            $("range" + id).value = z.level;
+            $("range" + id).disabled = z.auto;
+            $("status" + id).textContent = z.auto ? "● AUTO" : "● MANUEL";
+            $("status" + id).classList.toggle("manual", !z.auto);
+            $("auto" + id).textContent = z.auto
+              ? "Passer en manuel"
+              : "Activer AUTO";
+            $("prediction" + id).textContent =
+              `Fréquentation prévue : ${z.prediction === null ? "—" : z.prediction.toLocaleString("fr-FR")} passages/h`;
+            $("power" + id).textContent =
+              `Puissance théorique : ${((z.maxKW * z.level) / 100).toFixed(2).replace(".", ",")} kW`;
+          }
+          const total = Object.values(zones).reduce(
+            (s, z) => s + (z.maxKW * z.level) / 100,
+            0,
+          );
+          $("totalPower").textContent = lastResult
+            ? total.toFixed(2).replace(".", ",") + " kW"
+            : "—";
+          $("average").textContent = lastResult
+            ? Math.round((zones.A.level + zones.B.level) / 2) + " %"
+            : "—";
+          $("autoCount").textContent =
+            Object.values(zones).filter((z) => z.auto).length + " / 2";
+          $("weatherLabel").textContent = weatherNames[$("weather").value];
+          document
+            .querySelectorAll(".marker")
+            .forEach((b) =>
+              b.classList.toggle("selected", b.dataset.zone === selected),
+            );
+        }
+        function updateWeatherFields() {
+          const w = $("weather").value;
+          const presets = {
+            clear: [0, 18],
+            cloudy: [0, 10],
+            rain: [7, 5],
+            fog: [0, 1],
+          };
+          const [rain, visibility] = presets[w];
+          $("rainMM").value = rain;
+          $("visibility").value = visibility;
+        }
+        function readPayload() {
+          const date = $("apiDate").value;
+          if (!date) throw new Error("Renseigne la date et l’heure");
+          const numeric = (id, min, max) => {
+            const el = $(id);
+            if (el.value.trim() === "")
+              throw new Error("Champ manquant : " + id);
+            const v = Number(el.value);
+            if (!Number.isFinite(v) || v < min || v > max)
+              throw new Error("Valeur invalide : " + id);
+            return v;
+          };
+          return {
+            date_heure: isoWithOffset(date),
+            temperature_c: numeric("temperature", -30, 55),
+            precipitations_mm: numeric("rainMM", 0, 500),
+            visibilite_km: numeric("visibility", 0, 100),
+            hauteur_soleil_deg: numeric("sunAngle", -90, 90),
+          };
+        }
+        async function regulate() {
+          if (daySimulation || dayRequestPending) return;
+          const seq = ++requestSequence;
+          let payload;
+          try {
+            payload = readPayload();
+          } catch (e) {
+            setStatus(e.message, "error");
+            return;
+          }
+          setStatus("Prédiction en cours…");
+          $("sendAPI").disabled = true;
+          const controller = new AbortController();
+          const timeout = setTimeout(() => controller.abort(), 12000);
+          try {
+            const response = await fetch(API_URL, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+              signal: controller.signal,
+            });
+            const result = await response.json();
+            if (!response.ok)
+              throw new Error(result.error || `Erreur HTTP ${response.status}`);
+            if (seq !== requestSequence) return;
+            if (!result.zones?.A || !result.zones?.B)
+              throw new Error("Réponse API incomplète");
+            for (const id of ["A", "B"]) {
+              const info = result.zones[id];
+              if (
+                !Number.isFinite(Number(info.eclairage_pct)) ||
+                !Number.isFinite(Number(info.frequentation_prevue))
+              )
+                throw new Error("Valeurs API invalides");
+              zones[id].prediction = Number(info.frequentation_prevue);
+              zones[id].motif = String(info.motif || "");
+              if (zones[id].auto)
+                zones[id].level = clamp(Number(info.eclairage_pct));
+            }
+            lastResult = result;
+            syncPhaseFromSun(payload.hauteur_soleil_deg);
+            $("logicText").textContent =
+              `API NOCTURA ${result.version || "2.0"} · A : ${zones.A.motif} · B : ${zones.B.motif}. Les zones en MANUEL conservent leur réglage.`;
+            setStatus("● API connectée · prédiction reçue", "ok");
+            render();
+          } catch (e) {
+            if (seq !== requestSequence) return;
+            setStatus(
+              "● API indisponible : " +
+                (e.name === "AbortError" ? "délai dépassé" : e.message),
+              "error",
+            );
+            $("logicText").textContent =
+              "Dernière réponse conservée si disponible. Aucune nouvelle consigne automatique appliquée.";
+          } finally {
+            clearTimeout(timeout);
+            if (seq === requestSequence) $("sendAPI").disabled = false;
+          }
+        }
+        function queueRegulate() {
+          if (daySimulation || dayRequestPending) return;
+          clearTimeout(debounce);
+          debounce = setTimeout(regulate, 350);
+        }
+        // Animation : une heure du backend reste affichée 3 secondes.
+        function showSimulatedHour(hour) {
+          if (!hour?.zones?.A || !hour?.zones?.B || !hour?.meteo || !hour?.date_heure) {
+            console.error("Heure reçue invalide", hour);
+            throw new Error("Résultat horaire incomplet (date, météo ou zones manquantes)");
+          }
+          const local = hour.date_heure.slice(0, 16);
+          $("apiDate").value = local;
+          $("clock").value = local.slice(11, 16);
+          $("temperature").value = hour.meteo.temperature_c;
+          $("rainMM").value = hour.meteo.precipitations_mm;
+          $("visibility").value = hour.meteo.visibilite_km;
+          $("sunAngle").value = hour.meteo.hauteur_soleil_deg;
+          const w = hour.meteo;
+          $("weather").value = w.visibilite_km < 5 ? "fog" : w.precipitations_mm >= 0.5 ? "rain" : "clear";
+          syncPhaseFromSun(Number(w.hauteur_soleil_deg));
+          for (const id of ["A", "B"]) {
+            const info = hour.zones[id];
+            zones[id].prediction = Number(info.frequentation_prevue);
+            zones[id].motif = String(info.motif || "");
+            if (zones[id].auto) zones[id].level = clamp(Number(info.eclairage_pct));
+          }
+          lastResult = { zones: hour.zones, version: "2.0" };
+          $("logicText").textContent = `Simulation journalière · A : ${zones.A.motif} · B : ${zones.B.motif}.`;
+          render();
+        }
+        // Le backend fournit une consigne PAR HEURE. Entre deux heures,
+        // l'horloge et l'énergie avancent continûment ; les prévisions restent horaires.
+        function updateLiveSimulation(sim, elapsed) {
+          const hourIndex = Math.max(0, Math.min(23, Math.floor(elapsed / HOUR_MS)));
+          const minuteOfDay = Math.min(1439, Math.floor(elapsed / TOTAL_MS * 1440));
+          const hh = Math.floor(minuteOfDay / 60);
+          const mm = minuteOfDay % 60;
+          const row = sim.hours[hourIndex];
+          if (!row?.zones?.A || !row?.zones?.B || !row?.meteo) return;
+          const w = row.meteo;
+          const levels = row.zones;
+          $("simLiveTime").textContent = `${pad(hh)}:${pad(mm)}`;
+          $("simLivePhase").textContent = names[phase] + (sim.paused ? " · pause" : " · en cours");
+          $("simLiveA").textContent = Number(levels.A.frequentation_prevue).toLocaleString("fr-FR");
+          $("simLiveB").textContent = Number(levels.B.frequentation_prevue).toLocaleString("fr-FR");
+          $("simLiveLevels").textContent = `${levels.A.eclairage_pct} % / ${levels.B.eclairage_pct} %`;
+          $("simLiveWeather").textContent = `${Number(w.temperature_c).toLocaleString("fr-FR")} °C`;
+          $("simLiveWeatherDetail").textContent = `Pluie ${w.precipitations_mm} mm · visibilité ${w.visibilite_km} km`;
+          // Intégration de la puissance simulée sur les heures déjà écoulées
+          // et sur la fraction de l'heure en cours.
+          let energy = 0;
+          for (let i = 0; i < hourIndex; i++) {
+            const z = sim.hours[i].zones;
+            energy += zones.A.maxKW * z.A.eclairage_pct / 100;
+            energy += zones.B.maxKW * z.B.eclairage_pct / 100;
+          }
+          const fraction = Math.max(0, Math.min(1, (elapsed - hourIndex * HOUR_MS) / HOUR_MS));
+          energy += fraction * (
+            zones.A.maxKW * levels.A.eclairage_pct / 100 +
+            zones.B.maxKW * levels.B.eclairage_pct / 100
+          );
+          // Au terme exact des 72 secondes, inclure toute la dernière heure.
+          if (elapsed >= TOTAL_MS) {
+            energy += (1 - fraction) * (
+              zones.A.maxKW * levels.A.eclairage_pct / 100 +
+              zones.B.maxKW * levels.B.eclairage_pct / 100
+            );
+          }
+          $("simLiveEnergy").textContent = `${energy.toFixed(2).replace(".", ",")} kWh`;
+          $("simLiveEnergyDetail").textContent = `Calcul simulé · ${Math.floor(elapsed / 1000)} / ${TOTAL_SECONDS} s`;
+        }
+        function setDayControls(active, paused = false) {
+          $("simulateDay").disabled = active || dayRequestPending;
+          $("pauseDay").disabled = !active;
+          $("stopDay").disabled = !active;
+          $("pauseDay").textContent = paused ? "▶ Reprendre" : "⏸ Pause";
+          $("sendAPI").disabled = active || dayRequestPending;
+          $("apply").disabled = active || dayRequestPending;
+          $("timing").disabled = active;
+        }
+        function endDaySimulation(message, type = "ok") {
+          if (daySimulation?.frame != null) cancelAnimationFrame(daySimulation.frame);
+          daySimulation = null;
+          setDayControls(false);
+          $("dayStatus").textContent = message;
+          setStatus(message, type);
+        }
+        function tickDay(now) {
+          const sim = daySimulation;
+          if (!sim || sim.paused) return;
+          // L'horodatage requestAnimationFrame peut précéder légèrement
+          // performance.now() au démarrage : ne jamais autoriser un temps négatif.
+          const deltaMs = Math.max(0, now - sim.startedAt);
+          const elapsed = Math.max(0, Math.min(TOTAL_MS, sim.elapsed + deltaMs));
+          $("dayProgress").value = elapsed / 1000;
+
+          // Toujours un index valide pour les 24 résultats : 0 à 23.
+          const index = Math.max(0, Math.min(23, Math.floor(elapsed / HOUR_MS)));
+          if (index !== sim.hourIndex) {
+            const hour = sim.hours[index];
+            if (!hour?.zones?.A || !hour?.zones?.B || !hour?.meteo) {
+              console.error("Données horaires invalides :", { index, hour });
+              endDaySimulation(`Simulation interrompue : données invalides à ${index} h`, "error");
+              return;
+            }
+            try {
+              showSimulatedHour(hour);
+              sim.hourIndex = index;
+            } catch (error) {
+              console.error("Impossible d'afficher l'heure :", index, error);
+              endDaySimulation(`Erreur d'affichage à ${index} h : ${error.message}`, "error");
+              return;
+            }
+          }
+          updateLiveSimulation(sim, elapsed);
+          $("dayStatus").textContent = `Heure ${pad(Math.floor(Math.min(1439,elapsed / TOTAL_MS * 1440) / 60))}:${pad(Math.floor(Math.min(1439,elapsed / TOTAL_MS * 1440)) % 60)} · ${Math.floor(elapsed/1000)} / ${TOTAL_SECONDS} s`;
+          if (elapsed >= TOTAL_MS) {
+            endDaySimulation("✓ Journée simulée terminée (72 s)");
+          } else {
+            sim.frame = requestAnimationFrame(tickDay);
+          }
+        }
+        async function startDaySimulation() {
+          if (daySimulation || dayRequestPending) return;
+          clearTimeout(debounce);
+          ++requestSequence; // Invalide une éventuelle réponse /api/predict en attente.
+          dayRequestPending = true;
+          setDayControls(false);
+          $("simulateDay").disabled = true;
+          $("dayStatus").textContent = "Chargement des 24 heures…";
+          try {
+            const date = ($("apiDate").value || localDateTime(new Date())).slice(0, 10);
+            const response = await fetch(DAY_URL, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ date }),
+            });
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.error || `HTTP ${response.status}`);
+            if (!Array.isArray(result.heures) || result.heures.length !== 24) {
+              throw new Error("L'API doit renvoyer 24 heures");
+            }
+            // Vérifier toutes les données AVANT le lancement de l'animation.
+            result.heures.forEach((hour, index) => {
+              if (!hour || typeof hour.date_heure !== "string" ||
+                  !hour.meteo || !hour.zones?.A || !hour.zones?.B ||
+                  !Number.isFinite(Number(hour.meteo.hauteur_soleil_deg)) ||
+                  ["A", "B"].some(z =>
+                    !Number.isFinite(Number(hour.zones[z].frequentation_prevue)) ||
+                    !Number.isFinite(Number(hour.zones[z].eclairage_pct))
+                  )) {
+                throw new Error(`Données incomplètes à ${String(index).padStart(2, "0")} h`);
+              }
+            });
+            $("timing").value = "simulation";
+            for (const id of ["A", "B"]) zones[id].auto = true;
+            // Afficher l'heure 00 avant de démarrer le chronomètre.
+            showSimulatedHour(result.heures[0]);
+            daySimulation = { hours: result.heures, elapsed: 0, startedAt: performance.now(), hourIndex: 0, paused: false, frame: null };
+            $("dayProgress").value = 0;
+            setStatus("● Simulation API chargée", "ok");
+            $("dayStatus").textContent = "Heure 00:00 · 0 / 72 s";
+            updateLiveSimulation(daySimulation, 0);
+            daySimulation.frame = requestAnimationFrame(tickDay);
+          } catch (error) {
+            if (daySimulation?.frame != null) cancelAnimationFrame(daySimulation.frame);
+            daySimulation = null;
+            setStatus("Simulation impossible : " + error.message, "error");
+            $("dayStatus").textContent = "Erreur : " + error.message;
+          } finally {
+            dayRequestPending = false;
+            setDayControls(Boolean(daySimulation));
+          }
+        }
+        $("simulateDay").addEventListener("click", startDaySimulation);
+        $("pauseDay").addEventListener("click", () => {
+          const sim = daySimulation;
+          if (!sim) return;
+          if (sim.paused) {
+            sim.paused = false;
+            sim.startedAt = performance.now();
+            sim.frame = requestAnimationFrame(tickDay);
+          } else {
+            sim.elapsed = Math.max(0, Math.min(TOTAL_MS,
+              sim.elapsed + Math.max(0, performance.now() - sim.startedAt)));
+            sim.paused = true;
+            cancelAnimationFrame(sim.frame);
+            $("dayStatus").textContent = "⏸ Simulation en pause";
+          }
+          const position = sim.paused ? sim.elapsed : Math.max(0, Math.min(TOTAL_MS, sim.elapsed + performance.now() - sim.startedAt));
+          updateLiveSimulation(sim, position);
+          setDayControls(true, sim.paused);
+        });
+        $("stopDay").addEventListener("click", () => endDaySimulation("Simulation arrêtée"));
+        for (const id of ["A", "B"]) {
+          $("range" + id).addEventListener("input", (e) => {
+            zones[id].level = Number(e.target.value);
+            zones[id].auto = false;
+            selected = id;
+            render();
+          });
+          $("auto" + id).addEventListener("click", () => {
+            if (daySimulation) return;
+            zones[id].auto = !zones[id].auto;
+            if (zones[id].auto) {
+              if (lastResult?.zones?.[id])
+                zones[id].level = clamp(lastResult.zones[id].eclairage_pct);
+              queueRegulate();
+            }
+            render();
+          });
+        }
+        document.querySelectorAll(".marker").forEach((b) =>
+          b.addEventListener("click", () => {
+            selected = b.dataset.zone;
+            render();
+            $("range" + selected).focus({ preventScroll: true });
+          }),
+        );
+        document.querySelectorAll("[data-phase]").forEach((b) =>
+          b.addEventListener("click", () => {
+            if (daySimulation) return;
+            const p = b.dataset.phase;
+            displayPhase(p);
+            $("timing").value = "manual";
+            $("sunAngle").value = { jour: 35, crepuscule: -3, nuit: -20 }[p];
+            queueRegulate();
+          }),
+        );
+        $("timing").addEventListener("change", () => {
+          if (daySimulation) return;
+          if ($("timing").value === "realtime")
+            $("apiDate").value = localDateTime(new Date());
+          else if ($("timing").value === "simulation") {
+            const [date] = (
+              $("apiDate").value || localDateTime(new Date())
+            ).split("T");
+            $("apiDate").value = date + "T" + $("clock").value;
+          }
+          queueRegulate();
+        });
+        $("clock").addEventListener("change", () => {
+          if (daySimulation) return;
+          if ($("timing").value === "simulation") {
+            const date = (
+              $("apiDate").value || localDateTime(new Date())
+            ).split("T")[0];
+            $("apiDate").value = date + "T" + $("clock").value;
+            queueRegulate();
+          }
+        });
+        $("weather").addEventListener("change", () => {
+          if (daySimulation) return;
+          updateWeatherFields();
+          queueRegulate();
+        });
+        for (const id of [
+          "apiDate",
+          "temperature",
+          "rainMM",
+          "visibility",
+          "sunAngle",
+        ])
+          $(id).addEventListener("change", queueRegulate);
+        $("sendAPI").addEventListener("click", regulate);
+        $("apply").addEventListener("click", regulate);
+        let lastMinute = "";
+        setInterval(() => {
+          $("liveClock").textContent = time();
+          if (!daySimulation && $("timing").value === "realtime") {
+            const date = localDateTime(new Date());
+            if (date !== lastMinute) {
+              lastMinute = date;
+              $("apiDate").value = date;
+              queueRegulate();
+            }
+          }
+        }, 200);
+        $("apiDate").value = "2026-07-20T20:45";
+        $("clock").value = "20:45";
+        $("liveClock").textContent = time();
+        displayPhase("crepuscule");
+        render();
+        regulate();
+      })();
+    </script>
+  </body>
+</html>
